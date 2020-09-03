@@ -1,0 +1,65 @@
+{
+  "private": true,
+  "scripts": {
+    "start": "start-storybook -c ./src/ec/storybook/.storybook"
+  },
+  "devDependencies": {
+    "@babel/core": "7.11.4",
+    "@babel/node": "7.10.5",
+    "@babel/plugin-transform-runtime": "7.11.0",
+    "@babel/preset-env": "7.11.0",
+    "@babel/preset-react": "7.10.4",
+    "babel-jest": "26.3.0",
+    "babel-loader": "8.1.0",
+    "babel-plugin-preval": "5.0.0",
+    "browser-update": "3.3.21",
+    "core-js": "3.6.5",
+    "eslint": "7.7.0",
+    "eslint-config-airbnb": "18.2.0",
+    "eslint-config-prettier": "6.11.0",
+    "eslint-plugin-import": "2.22.0",
+    "eslint-plugin-jest": "23.20.0",
+    "eslint-plugin-jsx-a11y": "6.3.1",
+    "eslint-plugin-prettier": "3.1.4",
+    "eslint-plugin-react": "7.20.6",
+    "eslint-plugin-unicorn": "21.0.0",
+    "file-system": "2.2.2",
+    "husky": "4.2.5",
+    "jest": "26.4.2",
+    "jq-cli-wrapper": "1.6.1",
+    "js-beautify": "1.13.0",
+    "lerna": "3.22.1",
+    "lerna-changelog": "1.0.1",
+    "lint-staged": "10.2.13",
+    "ncp": "2.0.0",
+    "netlify-cli": "2.59.1",
+    "node-fetch": "2.6.0",
+    "npm-run-all": "4.1.5",
+    "patch-package": "6.2.2",
+    "prettier": "2.1.1",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "rimraf": "3.0.2",
+    "twing": "2.3.7",
+    "twing-loader": "2.0.2",
+    "webpack": "4.44.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{md,mdx,html,json,yml}": [
+      "prettier --write"
+    ],
+    "*.js": [
+      "prettier --write",
+      "eslint"
+    ]
+  },
+  "workspaces": [
+    "src/ec/packages/*",
+    "src/ec/storybook"
+  ]
+}

@@ -1,0 +1,95 @@
+pipeline:
+  dependencies:
+    image: node:erbium
+    commands:
+      - ./scripts/check-lockfile.sh
+
+  lint:
+    group: tests
+    image: node:erbium
+    commands:
+      - yarn lint && yarn pretty:check
+
+  jest:
+    group: tests
+    image: node:erbium
+    commands:
+      - yarn jest
+
+  check-build:
+    image: node:erbium
+    secrets: [gh_token]
+    commands: node scripts/failcheck.js
+    when:
+      status: [success, failure]
+
+  deploy-twigjs-preview:
+    group: previews
+    image: node:erbium
+    secrets: [gh_token, netlify_auth_token, netlify_js_site_id]
+    commands:
+      - yarn twing:clean
+      - yarn twing:dist
+      - 'yarn netlify deploy --site $${NETLIFY_JS_SITE_ID} --alias ${DRONE_COMMIT_BRANCH} --message "Drone build: ${CI_BUILD_NUMBER}"'
+      - node scripts/set-netlify-deployment-status.js
+    environment:
+      - DEPLOY_CONTEXT=preview/twig-js
+    when:
+      event: push
+      status: [success, failure]
+      branch:
+        exclude:
+          - master
+
+  deploy-prod-js:
+    image: node:erbium
+    secrets: [gh_token, netlify_auth_token, netlify_js_site_id]
+    commands:
+      - yarn twing:clean
+      - yarn twing:dist
+      - 'yarn netlify deploy --prod --site $${NETLIFY_JS_SITE_ID} --message "Drone build: ${CI_BUILD_NUMBER}"'
+      - node scripts/set-netlify-deployment-status.js
+    environment:
+      - DEPLOY_CONTEXT=preview/twig-js
+    when:
+      branch: master
+      event: push
+
+  deploy-prod-php:
+    image: roelofr/php-node
+    secrets: [gh_token, netlify_auth_token, netlify_php_site_id]
+    commands:
+      - npm install -g n && n stable
+      - yarn install
+      - rm -rf netlify.toml
+      - yarn php:install
+      - yarn php:dist
+      - 'yarn netlify deploy --prod --dir=php/dist --site $${NETLIFY_PHP_SITE_ID} --message "Drone build: ${CI_BUILD_NUMBER}"'
+      - node scripts/set-netlify-deployment-status.js
+    environment:
+      - DEPLOY_CONTEXT=preview/twig-php
+    when:
+      branch: master
+      event: push
+
+  deploy-twigphp-preview:
+    group: previews
+    image: roelofr/php-node
+    secrets: [gh_token, netlify_auth_token, netlify_php_site_id]
+    commands:
+      - npm install -g n && n stable
+      - yarn install
+      - rm -rf netlify.toml
+      - yarn php:install
+      - yarn php:dist
+      - yarn diff
+      - 'yarn netlify deploy --dir=php/dist --site $${NETLIFY_PHP_SITE_ID} --alias ${DRONE_COMMIT_BRANCH} --message "Drone build: ${CI_BUILD_NUMBER}"'
+      - node scripts/set-netlify-deployment-status.js
+    environment:
+      - DEPLOY_CONTEXT=preview/twig-php
+    when:
+      event: push
+      status: [success, failure]
+      branch:
+        exclude:
+          - master

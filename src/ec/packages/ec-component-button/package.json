@@ -1,0 +1,10 @@
+{
+  "name": "@ecl-twig/ec-component-button",
+  "private":true,
+  "version": "0.0.1",
+  "description": "",
+  "devDependencies": {
+    "@ecl/ec-resources-icons": "2.31.0",
+    "@ecl/ec-specs-button": "2.31.0"
+  }
+}

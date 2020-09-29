@@ -11,7 +11,7 @@ const webpackFinal = (config) => {
     test: /\.twig$/,
     loader: 'twing-loader',
     options: {
-      environmentModulePath: path.resolve(`${__dirname}/environment.js`),
+      environmentModulePath: path.resolve(`${__dirname}/../twing/env/fs.js`),
     },
   });
   config.plugins.forEach((plugin, i) => {
